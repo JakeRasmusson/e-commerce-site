@@ -4,9 +4,10 @@ const { Category, Product } = require('../../models');
 // The `/api/categories` endpoint
 
 router.get('/', (req, res) => {
-  Category.findAll({include: [{
-    model: Product
-  }]}).then((category) => {
+  Category.findAll({include: [
+    {
+    model: Product}
+  ]}).then((category) => {
     res.status(200).json(category)
   }).catch((err) => {
     console.log(err);
@@ -18,7 +19,9 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const id = req.params.id
-  Category.findByPk(id).then((category) => {
+  Category.findByPk(id, {include: 
+    [{model: Product}]}
+  ).then((category) => {
     res.status(200).json(category)
   }).catch((err) => {
     console.log(err);
@@ -42,8 +45,13 @@ router.put('/:id', (req, res) => {
   const id = req.params.id
   Category.update(req.body, {
     where: {
-      id: id 
+      id 
     }
+  }).then((category) => {
+    res.status(200).json(category)
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
   })
   // update a category by its `id` value
 });
@@ -54,6 +62,11 @@ router.delete('/:id', (req, res) => {
     where: {
       id
     }
+  }).then((category) => {
+    res.status(200).json(category)
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
   })
   // delete a category by its `id` value
 });

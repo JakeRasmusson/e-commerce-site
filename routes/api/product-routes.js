@@ -1,11 +1,14 @@
-const router = require('express').Router();
+   const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
 
 // get all products
 router.get('/', (req, res) => {
-  Product.findAll().then((product) => {
+  Product.findAll({include: [{
+    model: Category,
+    model: Tag
+  }]}).then((product) => {
     res.status(200).json(product)
   }).catch((err) => {
     console.log(err);
@@ -18,7 +21,10 @@ router.get('/', (req, res) => {
 // get one product
 router.get('/:id', (req, res) => {
   const id = req.params.id
-  Product.findByPk(id).then((product) => {
+  Product.findByPk(id, {include: [{
+    model: Category,
+    model: Tag
+  }]}).then((product) => {
     res.status(200).json(product)
   }).catch((err) => {
     console.log(err);
@@ -112,9 +118,11 @@ router.delete('/:id', (req, res) => {
     where: {
       id
     }
-  }).then((err) => {
-    if (err) {res.status(500)}
-    res.status(200)
+  }).then((product) => {
+    res.status(200).json(product)
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
   })
   // delete one product by its `id` value
 });
