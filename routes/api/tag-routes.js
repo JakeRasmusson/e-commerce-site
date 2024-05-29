@@ -1,73 +1,84 @@
-const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
-  Tag.findAll({include: [{
-    model: Product
-  }]}).then((category) => {
-    res.status(200).json(category)
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
+
+// find all tags
+router.get("/", (req, res) => {
+  Tag.findAll({
+    include: [
+      {
+        model: Product,
+      },
+    ],
   })
-  // find all tags
-  // be sure to include its associated Product data
+    .then((category) => {
+      res.status(200).json(category);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send('Server Error');
+    });
 });
 
-router.get('/:id', (req, res) => {
-  const id = req.params.id
-  Tag.findByPk(id, {include: 
-    [{model: Product}]}
-  ).then((product) => {
-    res.status(200).json(product)
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
-  })
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
+// find a single tag by its `id`
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  Tag.findByPk(id, { include: [{ model: Product }] })
+    .then((product) => {
+      res.status(200).json(product);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send('Server Error');
+    });
 });
 
-router.post('/', (req, res) => {
-  Tag.create(req.body).then((tag) => {
-    res.status(200).json(tag)
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
-  })
-  // create a new tag
+// create a new tag
+router.post("/", (req, res) => {
+  Tag.create(req.body)
+    .then((tag) => {
+      res.status(200).json(tag);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send('Server Error');
+    });
 });
 
-router.put('/:id', (req, res) => {
-  const id = req.params.id
+// update a tag's name by its `id` value
+router.put("/:id", (req, res) => {
+  const id = req.params.id;
   Tag.update(req.body, {
     where: {
-      id 
-    }
-  }).then((tag) => {
-    res.status(200).json(tag)
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
+      id,
+    },
   })
-  // update a tag's name by its `id` value
+    .then((tag) => {
+      res.status(200).json(tag);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send('Server Error');
+    });
 });
 
-router.delete('/:id', (req, res) => {
-  const id = req.params.id
+// delete on tag by its `id` value
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
   Tag.destroy({
     where: {
-      id
-    }
-  }).then((tag) => {
-    res.status(200).json(tag)
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
+      id,
+    },
   })
-  // delete on tag by its `id` value
+    .then((tag) => {
+      res.status(200).json(tag);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send('Server Error');
+    });
 });
 
 module.exports = router;
